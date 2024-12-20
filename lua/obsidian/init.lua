@@ -141,20 +141,21 @@ obsidian.setup = function(opts)
 
       -- Inject Obsidian as a cmp source.
       if opts.completion.nvim_cmp then
-        local cmp = require "cmp"
-
-        local sources = {
-          { name = "obsidian" },
-          { name = "obsidian_new" },
-          { name = "obsidian_tags" },
-        }
-        for _, source in pairs(cmp.get_config().sources) do
-          if source.name ~= "obsidian" and source.name ~= "obsidian_new" and source.name ~= "obsidian_tags" then
-            table.insert(sources, source)
+        local ok, cmp = pcall(require, "cmp")
+        if ok then
+          local sources = {
+            { name = "obsidian" },
+            { name = "obsidian_new" },
+            { name = "obsidian_tags" },
+          }
+          for _, source in pairs(cmp.get_config().sources) do
+            if source.name ~= "obsidian" and source.name ~= "obsidian_new" and source.name ~= "obsidian_tags" then
+              table.insert(sources, source)
+            end
           end
+          ---@diagnostic disable-next-line: missing-fields
+          cmp.setup.buffer { sources = sources }
         end
-        ---@diagnostic disable-next-line: missing-fields
-        cmp.setup.buffer { sources = sources }
       end
 
       -- Run enter-note callback.
